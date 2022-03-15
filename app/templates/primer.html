@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+
+{% block menu %}
+<li>
+    <a class="nav-link" href="{{ url_for('generate_model') }}">
+        <i class="nc-icon nc-preferences-circle-rotate"></i>
+        <p>Generate Model</p>
+    </a>
+</li>
+<li>
+    <a class="nav-link" href="{{ url_for('automate_design') }}">
+        <i class="nc-icon nc-settings-90"></i>
+        <p>Automate Design</p>
+    </a>
+</li>
+<li>
+    <a class="nav-link" href="{{ url_for('simulate_design') }}">
+        <i class="nc-icon nc-button-play"></i>
+        <p>Simulate Design</p>
+    </a>
+</li>
+<li class="nav-item active">
+  <a class="nav-link" href="{{ url_for('compose_primer') }}">
+      <i class="nc-icon nc-palette"></i>
+      <p>Compose Primers</p>
+  </a>
+</li>
+{% endblock %}
+
+{%  block content %}
+                
+<div class="main-panel">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg " color-on-scroll="500">
+        <div class="container-fluid">
+            <a class="navbar-brand" href=""> Generate Instruction </a>
+            <button href="" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-bar burger-lines"></span>
+                <span class="navbar-toggler-bar burger-lines"></span>
+                <span class="navbar-toggler-bar burger-lines"></span>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- End Navbar -->
+    <div class="content">
+        <div class="container-fluid">
+            <form method="POST" action="{{ url_for('primer.download_output') }}" enctype="multipart/form-data">
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card ">
+                            <div class="card-header ">
+                                <h4 class="card-title">Primers Composer</h4>
+                                <p class="card-category">Choose a list of input designs and templates</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p>Input design(s)</p>
+                                        <input type="file" class=" form-control" id="input_design_id" name="input_design_data"/>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p>Local database</p>
+                                        <input type="file" class=" form-control" id="template_id" name="template_data"/>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="save_result_id" name="save_result" checked>
+                                            <label>Save result into database</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="reset" class="btn btn-warning btn-fill" id="reset_id" name="reset" value="Reset"/>
+                        <input type="submit" class="btn btn-info btn-fill" id="submit_id" name="submit" value="Submit" onclick="alert('Composing primers... !!!')"/>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container-fluid">
+            <nav>
+                <p class="copyright text-center">
+                    ©
+                    <script>
+                        document.write(new Date().getFullYear())
+                    </script>
+                    R. Mardian (<a href="http://wang.bio.ed.ac.uk">Wang Lab</a>), bootstrap template by <a href="https://www.creative-tim.com/product/light-bootstrap-dashboard">Creative Tim</a>
+                </p>
+            </nav>
+        </div>
+    </footer>
+</div>
+
+{% endblock %}
+
+{% block script %}
+{% endblock %}

@@ -1,0 +1,189 @@
+{% extends "layout.html" %}
+
+{% block menu %}
+<li>
+    <a class="nav-link" href="{{ url_for('generate_model') }}">
+        <i class="nc-icon nc-preferences-circle-rotate"></i>
+        <p>Generate Model</p>
+    </a>
+</li>
+<li class="nav-item active">
+    <a class="nav-link" href="{{ url_for('automate_design') }}">
+        <i class="nc-icon nc-settings-90"></i>
+        <p>Automate Design</p>
+    </a>
+</li>
+<li>
+    <a class="nav-link" href="{{ url_for('simulate_design') }}">
+        <i class="nc-icon nc-button-play"></i>
+        <p>Simulate Design</p>
+    </a>
+</li>
+<li>
+  <a class="nav-link" href="{{ url_for('compose_primer') }}">
+      <i class="nc-icon nc-palette"></i>
+      <p>Compose Primers</p>
+  </a>
+</li>
+{% endblock %}
+
+
+{%  block content %}
+                
+<div class="main-panel">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg " color-on-scroll="500">
+        <div class="container-fluid">
+            <a class="navbar-brand" href=""> Generate Model </a>
+            <button href="" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-bar burger-lines"></span>
+                <span class="navbar-toggler-bar burger-lines"></span>
+                <span class="navbar-toggler-bar burger-lines"></span>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- End Navbar -->
+    <div class="content">
+        <div class="container-fluid">
+          <form method="POST" action="{{ url_for('design.run_design') }}" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card ">
+                        <div class="card-header ">
+                          <h4 class="card-title">Design Automation</h4>
+                          <p class="card-category">Design a Genetic Circuit</p>
+                        </div>
+                        <div class="card-body">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <div class="text-right mb-2">
+                                <input type="submit" id="save_id" name="save" value="Save"/>
+                                <button type="button" onclick="reset_design()">Clear</button>
+                              </div>
+                              <div style="width: 100%; display: flex;">
+                                <div id="palette" style="width: 110px; height: 475px; margin-right: 2px; border: solid 1px black"></div>
+                                <div id="myDiagramDiv" style="flex-grow: 1; height: 475px; border: solid 1px black"></div>
+                              </div>
+                            </div>
+                          </div>
+                          <br/>
+                          <div class="row">
+                            <div class="col-md-12">
+                              <p>Select a design template</p>
+                              <select class="btn dropdown-toggle form-control" id="design_id" name="design" onchange="load_builtin()">
+                                <option disabled selected>-- Select a design --</option>
+                                <option>8-inputs AND gate</option>
+                                <option>1-bit half adder</option>
+                                <option>1-bit full adder</option>
+                                <option>Upload custom design</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="row mt-2" id="upload_circuit" style="display:none;">
+                            <div class="col-md-12 text-right">
+                              <input type="file" class="form-control mb-2" id="fluorescence_data_id" name="fluorescence_data"/>
+                              <input type="submit" class="btn btn-info btn-fill" id="upload_circuit_id" name="upload_circuit" value="Upload"/>
+                            </div>
+                          </div>
+                          <textarea id="mySavedModel" name="saved_design" style="width:100%;height:200px;display:none;">
+                            {
+                              "class": "GraphLinksModel",
+                              "linkFromPortIdProperty": "fromPort",
+                              "linkToPortIdProperty": "toPort",
+                              "nodeDataArray": [],
+                              "linkDataArray": []
+                            }
+                          </textarea>
+                          <div style="display:none;" id="clear_flag">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card ">
+                  <div class="card-header ">
+                    <h4 class="card-title">Running Simulation</h4>
+                    <p class="card-category">Predict Circuit Performance</p>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-12">
+                          <p>Select a model</p>
+                          <select class="btn dropdown-toggle form-control" id="model_id" name="model" onchange="load_model()">
+                              <option disabled selected>-- Select a model --</option>
+                              <option>Pinto et al. Intein-based AND logic gates</option>
+                              {% for row in data %}
+                                <option>{{row}}</option>
+                              {% endfor %}
+                              <option>Upload custom model</option>
+                          </select>
+                      </div>
+                    </div>
+                    <div class="row mt-2" id="upload_model" style="display:none;">
+                      <div class="col-md-12 text-right">
+                        <input type="file" class="form-control mb-2" id="fluorescence_data_id" name="fluorescence_data"/>
+                        <input type="submit" class="btn btn-info btn-fill" id="upload_model_id" name="upload_model" value="Upload"/>
+                      </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                      <div class="col-md-12">
+                          <p>Select an objective function</p>
+                          <select class="btn dropdown-toggle form-control" id="objective_id" name="objective_function">
+                              <option selected>Area-Under-the-Curve</option>
+                              <option>Dynamic Range at 20h</option>
+                              <option>Delay of Induction</option>
+                          </select>
+                      </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                      <div class="col-md-12">
+                          <p>Select an optimization algorithm</p>
+                          <select class="btn dropdown-toggle form-control" id="optimization_id" name="optimization_algo">
+                              <option selected>Genetic Algorithm</option>
+                          </select>
+                      </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                      <div class="col-md-12 text-right">  
+                        <input type="submit" class="btn btn-primary btn-fill" id="submit_id" name="submit" value="Submit" onclick="validateDesignForm()"/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+          </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container-fluid">
+            <nav>
+                <p class="copyright text-center">
+                    ©
+                    <script>
+                        document.write(new Date().getFullYear())
+                    </script>
+                    R. Mardian (<a href="http://wang.bio.ed.ac.uk">Wang Lab</a>), bootstrap template by <a href="https://www.creative-tim.com/product/light-bootstrap-dashboard">Creative Tim</a>
+                </p>
+            </nav>
+        </div>
+    </footer>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<!-- Start of GoJS sample code -->
+<script src="../static/js/go.js"></script>
+<script src="../static/js/Figures.js"></script>
+<script id="code" src="../static/js/logic-circuit.js"></script>
+<!--  End of GoJS sample code  -->
+{% endblock %}

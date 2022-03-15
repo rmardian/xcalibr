@@ -1,0 +1,162 @@
+{% extends "layout.html" %}
+
+{% block menu %}
+<li class="nav-item active">
+    <a class="nav-link" href="{{ url_for('generate_model') }}">
+        <i class="nc-icon nc-preferences-circle-rotate"></i>
+        <p>Generate Model</p>
+    </a>
+</li>
+<li>
+    <a class="nav-link" href="{{ url_for('automate_design') }}">
+        <i class="nc-icon nc-settings-90"></i>
+        <p>Automate Design</p>
+    </a>
+</li>
+{% endblock %}
+
+{%  block content %}
+                
+<div class="main-panel">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg " color-on-scroll="500">
+        <div class="container-fluid">
+            <a class="navbar-brand" href=""> Generate Model </a>
+            <button href="" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-bar burger-lines"></span>
+                <span class="navbar-toggler-bar burger-lines"></span>
+                <span class="navbar-toggler-bar burger-lines"></span>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- End Navbar -->
+    <div class="content">
+        <div class="container-fluid">
+            <form method="POST" action="{{ url_for('model.add_model') }}" enctype="multipart/form-data">
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card ">
+                            <div class="card-header ">
+                                <h4 class="card-title">Model Definition</h4>
+                                <p class="card-category">Metadata</p>
+                                <!--<p text="" style="color:orange">{{ message }}</p>-->
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p>Model name</p>
+                                        <input type="text" class="form-control" id="model_name_id" name="model_name"/>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p>Choose a genetic part</p>
+                                        <select class="btn dropdown-toggle form-control" id="part_type_id" name="part_type">
+                                            <option selected>-- Select a part --</option>
+                                            <option>1-input NOT gate</option>
+                                            <option>2-inputs AND gate</option>
+                                            <option>2-inputs OR gate</option>
+                                            <option>2-inputs XOR gate</option>
+                                            <option>2-inputs NAND gate</option>
+                                            <option>2-inputs NOR gate</option>
+                                            <option>2-inputs XNOR gate</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p>White-box vs Black-box?</p>
+                                        <select class="btn dropdown-toggle form-control" id="model_interpret_id" name="model_interpret">
+                                            <option selected>White-box (Deterministic/ODEs)</option>
+                                            <option disabled>Black-box (Machine Learning)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p>Static vs Dynamic?</p>
+                                        <select class="btn dropdown-toggle form-control" id="model_type_id" name="model_type">
+                                            <option selected>Dynamic model</option>
+                                            <option disabled>Static model</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card ">
+                            <div class="card-header ">
+                                <h4 class="card-title">Create a Custom Model</h4>
+                                <p class="card-category">Define biochemistry of the model</p>
+                                <!--<p text="" style="color:orange">{{ message }}</p>-->
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p>Chemical reaction networks</p>
+                                        <textarea id="crn_id" name="crn" style="width:100%;height:200px"></textarea>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p>Components in abundance</p>
+                                        <textarea id="abd_id" name="abd" style="width:100%;height:150px"></textarea>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p>Degrading components</p>
+                                        <textarea id="deg_id" name="deg" style="width:100%;height:150px"></textarea>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="dilution_id" name="dilution" checked>
+                                            <label>Include dilution term</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="reset" class="btn btn-warning btn-fill" id="reset_id" name="reset" value="Reset"/>
+                        <input type="submit" class="btn btn-info btn-fill" id="submit_id" name="submit" value="Submit" onclick="validateCustomForm()"/>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container-fluid">
+            <nav>
+                <p class="copyright text-center">
+                    ©
+                    <script>
+                        document.write(new Date().getFullYear())
+                    </script>
+                    R. Mardian (<a href="http://wang.bio.ed.ac.uk">Wang Lab</a>), bootstrap template by <a href="https://www.creative-tim.com/product/light-bootstrap-dashboard">Creative Tim</a>
+                </p>
+            </nav>
+        </div>
+    </footer>
+</div>
+
+{% endblock %}
+
+{% block script %}
+{% endblock %}
