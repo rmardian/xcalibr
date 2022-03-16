@@ -10,4 +10,4 @@ RESOURCES = os.path.join(APP_ROOT, '../resources/')
 @primer_blueprint.route('/output', methods=['GET', 'POST'])
 def download_output():
 
-    return send_from_directory(directory=RESOURCES, path='output-example.csv', as_attachment=True)
+    return send_from_directory(directory=RESOURCES, path='assembly_plan.zip', as_attachment=True)

@@ -22,7 +22,7 @@
 <li class="nav-item active">
   <a class="nav-link" href="{{ url_for('compose_primer') }}">
       <i class="nc-icon nc-palette"></i>
-      <p>Compose Primers</p>
+      <p>Plan Assembly</p>
   </a>
 </li>
 {% endblock %}
@@ -51,7 +51,7 @@
                     <div class="col-md-12">
                         <div class="card ">
                             <div class="card-header ">
-                                <h4 class="card-title">Primers Composer</h4>
+                                <h4 class="card-title">Assembly Planning</h4>
                                 <p class="card-category">Choose a list of input designs and templates</p>
                             </div>
                             <div class="card-body">
@@ -64,7 +64,14 @@
                                 <br/>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <p>Local database</p>
+                                        <p>Template plasmids</p>
+                                        <input type="file" class=" form-control" id="template_id" name="template_data"/>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p>Primers</p>
                                         <input type="file" class=" form-control" id="template_id" name="template_data"/>
                                     </div>
                                 </div>
@@ -85,7 +92,8 @@
                 <div class="row">
                     <div class="col-md-6">
                         <input type="reset" class="btn btn-warning btn-fill" id="reset_id" name="reset" value="Reset"/>
-                        <input type="submit" class="btn btn-info btn-fill" id="submit_id" name="submit" value="Submit" onclick="alert('Composing primers... !!!')"/>
+                        <button class="btn btn-info btn-fill">Domesticate Parts</button>
+                        <input type="submit" class="btn btn-info btn-fill" id="submit_id" name="submit" value="Generate Plan" onclick="alert('Composing assembly plan... !!!')"/>
                     </div>
                 </div>
 
