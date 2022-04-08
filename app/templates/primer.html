@@ -56,6 +56,18 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
+                                    <div class="col-md-12"><p>Select an assembly plan</p>
+                                        <select class="btn dropdown-toggle form-control" id="assembly_id" name="assembly" onchange="selectPlan()">
+                                            <option disabled selected>-- Select an assembly plan --</option>
+                                            <option>Parts Setup (Level 0)</option>
+                                            <option>Circuits Assembly (Level 1 and more)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body" id="parts_setup" style="display:none;">
+                                <div class="row">
                                     <div class="col-md-12">
                                         <p>Input design(s)</p>
                                         <input type="file" class=" form-control" id="input_design_id" name="input_design_data"/>
@@ -73,6 +85,79 @@
                                     <div class="col-md-12">
                                         <p>Primers</p>
                                         <input type="file" class=" form-control" id="template_id" name="template_data"/>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="save_result_id" name="save_result" checked>
+                                            <label>Save result into database</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-body" id="circuit_assembly" style="display:none;">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                    <p>Select a design template</p>
+                                    <select class="btn dropdown-toggle form-control" id="design_id" name="design" onchange="load_dummy()">
+                                        <option disabled selected>-- Select a design --</option>
+                                        <option>3-inputs AND gate</option>
+                                        <option>4-inputs AND gate</option>
+                                        <option>8-inputs AND gate</option>
+                                        <option>1-bit half adder</option>
+                                        <option>1-bit full adder</option>
+                                        <option>Upload custom design</option>
+                                    </select>
+                                    </div>
+                                </div>
+                                <div class="row mt-2" id="upload_circuit" style="display:none;">
+                                  <div class="col-md-12 text-right">
+                                    <input type="file" class="form-control mb-2" id="fluorescence_data_id" name="fluorescence_data"/>
+                                    <input type="submit" class="btn btn-info btn-fill" id="upload_circuit_id" name="upload_circuit" value="Upload"/>
+                                  </div>
+                                </div>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                      <p>Select a library</p>
+                                      <select class="btn dropdown-toggle form-control" id="library_id" name="library" onchange="load_library()">
+                                        <option disabled selected>-- Select a library --</option>
+                                        <option>Pinto et. al. Split-inteins based AND logic gates (Nat. Comm. 2020)</option>
+                                        <option>Upload a new library</option>
+                                      </select>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                      <p>Select a design mode</p>
+                                      <select class="btn dropdown-toggle form-control" id="library_id" name="library" onchange="load_library()">
+                                        <option disabled selected>-- Select a design mode --</option>
+                                        <option>Combinatorial assembly - Permute gates only</option>
+                                        <option>Combinatorial assembly - Permute gates and promoters</option>
+                                        <option>Single assembly</option>
+                                      </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                      <p>Select a plasmid system</p>
+                                      <select class="btn dropdown-toggle form-control" id="library_id" name="library" onchange="load_library()">
+                                        <option disabled selected>-- Select a plasmid system --</option>
+                                        <option>1-plasmid system</option>
+                                        <option>2-plasmids system</option>
+                                        <option>3-plasmids system</option>
+                                      </select>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p>Parts</p>
+                                        <input type="file" class=" form-control" id="input_design_id" name="input_design_data"/>
                                     </div>
                                 </div>
                                 <br/>

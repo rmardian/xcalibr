@@ -178,3 +178,34 @@ function validateDesignForm() {
         }
     }
 }
+
+function selectPlan() {
+    var assembly_plan = document.getElementById("assembly_id");
+    var selected = assembly_plan.options[assembly_plan.selectedIndex].value;
+    var parts_setup = document.getElementById('parts_setup');
+    var circuit_assembly = document.getElementById('circuit_assembly');
+    if (selected=='Parts Setup (Level 0)') {
+        parts_setup.style.display = 'block';
+    }
+    else {
+        parts_setup.style.display = 'none';
+    }
+    if (selected=='Circuits Assembly (Level 1 and more)') {
+        circuit_assembly.style.display = 'block';
+    }
+    else {
+        circuit_assembly.style.display = 'none';
+    }
+}
+
+function load_dummy() {
+    var design = document.getElementById("design_id");
+    var selected = design.options[design.selectedIndex].value;
+    var upload_circuit = document.getElementById('upload_circuit');
+    if (selected=='Upload custom design') {
+        upload_circuit.style.display = 'block';
+    }
+    else {
+        upload_circuit.style.display = 'none';
+    }
+}
