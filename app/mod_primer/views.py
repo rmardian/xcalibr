@@ -10,11 +10,11 @@ RESOURCES = os.path.join(APP_ROOT, '../resources/')
 @primer_blueprint.route('/output', methods=['GET', 'POST'])
 def download_output():
 
-    if request.method == 'POST':
+    if request.method=='POST':
 
         opt = request.form.get('assembly')
         if opt=='Parts Setup (Level 0)':
 
-            return send_from_directory(directory=RESOURCES, path='assembly_plan.zip', as_attachment=True)
+            return send_from_directory(directory=RESOURCES, path='assembly-plan.zip', as_attachment=True)
 
-        return send_from_directory(directory=RESOURCES, path='combinatorial-4-inputs.zip', as_attachment=True)
+        return send_from_directory(directory=RESOURCES, path='combinatorial-assembly-4-inputs.zip', as_attachment=True)
