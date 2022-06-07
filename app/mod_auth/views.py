@@ -38,6 +38,7 @@ def login():
 		session['user'] = request.form['username']
 		session['logged_in'] = True
 		return redirect(url_for('index'))
+	
 	return render_template('login.html')
 
 @auth_blueprint.route('/logout.html', methods=['GET', 'POST'])

@@ -2,23 +2,23 @@
 
 {% block menu %}
 <li class="nav-item active">
-    <a class="nav-link" href="{{ url_for('generate_model') }}">
-        <i class="nc-icon nc-preferences-circle-rotate"></i>
-        <p>Generate Model</p>
-    </a>
-</li>
-<li>
     <a class="nav-link" href="{{ url_for('automate_design') }}">
         <i class="nc-icon nc-settings-90"></i>
         <p>Automate Design</p>
     </a>
 </li>
 <li>
+    <a class="nav-link" href="{{ url_for('generate_model') }}">
+        <i class="nc-icon nc-preferences-circle-rotate"></i>
+        <p>Generate Model</p>
+    </a>
+</li>
+<!--<li>
     <a class="nav-link" href="{{ url_for('simulate_design') }}">
         <i class="nc-icon nc-button-play"></i>
         <p>Simulate Design</p>
     </a>
-</li>
+</li>-->
 <li>
   <a class="nav-link" href="{{ url_for('compose_primer') }}">
       <i class="nc-icon nc-palette"></i>

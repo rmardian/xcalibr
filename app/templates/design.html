@@ -1,12 +1,6 @@
 {% extends "layout.html" %}
 
 {% block menu %}
-<li>
-    <a class="nav-link" href="{{ url_for('generate_model') }}">
-        <i class="nc-icon nc-preferences-circle-rotate"></i>
-        <p>Generate Model</p>
-    </a>
-</li>
 <li class="nav-item active">
     <a class="nav-link" href="{{ url_for('automate_design') }}">
         <i class="nc-icon nc-settings-90"></i>
@@ -14,16 +8,16 @@
     </a>
 </li>
 <li>
-    <a class="nav-link" href="{{ url_for('simulate_design') }}">
-        <i class="nc-icon nc-button-play"></i>
-        <p>Simulate Design</p>
-    </a>
+  <a class="nav-link" href="{{ url_for('plan_assembly') }}">
+      <i class="nc-icon nc-palette"></i>
+      <p>Plan Assembly</p>
+  </a>
 </li>
 <li>
-  <a class="nav-link" href="{{ url_for('compose_primer') }}">
-      <i class="nc-icon nc-palette"></i>
-      <p>Compose Primers</p>
-  </a>
+    <a class="nav-link" href="{{ url_for('generate_model') }}">
+        <i class="nc-icon nc-preferences-circle-rotate"></i>
+        <p>Generate Model</p>
+    </a>
 </li>
 {% endblock %}
 
@@ -50,53 +44,63 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card ">
-                        <div class="card-header ">
-                          <h4 class="card-title">Design Automation</h4>
-                          <p class="card-category">Design a Genetic Circuit</p>
+                      <div class="card-header ">
+                        <h4 class="card-title">Design Automation</h4>
+                        <p class="card-category">Design a Genetic Circuit</p>
+                      </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col-md-12">
+                            <p>Select a design template</p>
+                            <select class="btn dropdown-toggle form-control" id="design_id" name="design" onchange="load_builtin()">
+                              <option disabled selected>-- Select a design --</option>
+                              <option>8-inputs AND gate</option>
+                              <option>1-bit half adder</option>
+                              <option>1-bit full adder</option>
+                              <option>Upload custom design</option>
+                            </select>
+                          </div>
                         </div>
-                        <div class="card-body">
-                          <div class="row">
-                            <div class="col-md-12">
-                              <div class="text-right mb-2">
-                                <input type="submit" id="save_id" name="save" value="Save"/>
-                                <button type="button" onclick="reset_design()">Clear</button>
-                              </div>
-                              <div style="width: 100%; display: flex;">
-                                <div id="palette" style="width: 110px; height: 475px; margin-right: 2px; border: solid 1px black"></div>
-                                <div id="myDiagramDiv" style="flex-grow: 1; height: 475px; border: solid 1px black"></div>
-                              </div>
-                            </div>
+                        <div class="row mt-2" id="upload_circuit" style="display:none;">
+                          <div class="col-md-12 text-right">
+                            <input type="file" class="form-control mb-2" id="fluorescence_data_id" name="fluorescence_data"/>
+                            <input type="submit" class="btn btn-info btn-fill" id="upload_circuit_id" name="upload_circuit" value="Upload"/>
                           </div>
-                          <br/>
-                          <div class="row">
-                            <div class="col-md-12">
-                              <p>Select a design template</p>
-                              <select class="btn dropdown-toggle form-control" id="design_id" name="design" onchange="load_builtin()">
-                                <option disabled selected>-- Select a design --</option>
-                                <option>8-inputs AND gate</option>
-                                <option>1-bit half adder</option>
-                                <option>1-bit full adder</option>
-                                <option>Upload custom design</option>
-                              </select>
-                            </div>
-                          </div>
-                          <div class="row mt-2" id="upload_circuit" style="display:none;">
-                            <div class="col-md-12 text-right">
-                              <input type="file" class="form-control mb-2" id="fluorescence_data_id" name="fluorescence_data"/>
-                              <input type="submit" class="btn btn-info btn-fill" id="upload_circuit_id" name="upload_circuit" value="Upload"/>
-                            </div>
-                          </div>
-                          <textarea id="mySavedModel" name="saved_design" style="width:100%;height:200px;display:none;">
-                            {
-                              "class": "GraphLinksModel",
-                              "linkFromPortIdProperty": "fromPort",
-                              "linkToPortIdProperty": "toPort",
-                              "nodeDataArray": [],
-                              "linkDataArray": []
-                            }
-                          </textarea>
-                          <div style="display:none;" id="clear_flag">0</div>
                         </div>
+                        <br/>
+                        <div class="row">
+                          <div class="col-md-12">
+                            <div style="width: 100%; display: flex; margin-bottom: 10px;">
+                              <div id="palette" style="width: 110px; height: 475px; margin-right: 2px; border: solid 1px black"></div>
+                              <div id="myDiagramDiv" style="flex-grow: 1; height: 475px; border: solid 1px black"></div>
+                            </div>
+                            <div class="text-right mb-2">
+                              <input type="submit" id="save_id" name="save" value="Download"/>
+                              <button type="button" onclick="save()">Save</button>
+                              <button type="button" onclick="load()">Load</button>
+                              <button type="button" onclick="reset_design()">Clear</button>
+                            </div>
+                          </div>
+                        </div>
+                        <br/>
+                        
+                        <textarea id="mySavedModel" name="saved_design" style="width:100%;height:200px;">
+                          {
+                            "class": "GraphLinksModel",
+                            "linkFromPortIdProperty": "fromPort",
+                            "linkToPortIdProperty": "toPort",
+                            "nodeDataArray": [],
+                            "linkDataArray": []
+                          }
+                        </textarea>
+                        <div style="display:none;" id="clear_flag">0</div>
+                        <div class="row">
+                          <div class="col-md-12 text-right">  
+                            <input type="submit" class="btn btn-primary btn-fill" id="submit_id" name="submit" value="Parse Design" onclick="validateDesignForm()"/>
+                          </div>
+                        </div>
+                      </div>
+
                     </div>
                 </div>
             </div>

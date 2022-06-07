@@ -24,7 +24,7 @@ def run_design():
 
     if request.method == 'POST':
 
-        if request.form.get('save')=='Save':
+        if request.form.get('save')=='Download':
 
             with open(os.path.join(RESOURCES, './design.json'), 'w') as file:
                 file.write(request.form.get('saved_design'))
