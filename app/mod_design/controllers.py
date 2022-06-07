@@ -1,11 +1,11 @@
 import pandas as pd
 import numpy as np
 import os
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.backends.backend_pdf
-import matplotlib.pyplot as plt
-import seaborn as sns
+#import matplotlib
+#matplotlib.use('Agg')
+#import matplotlib.backends.backend_pdf
+#import matplotlib.pyplot as plt
+#import seaborn as sns
 
 from app.mod_design.models import runAutomation
 
