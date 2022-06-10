@@ -9,6 +9,7 @@ from Bio.Restriction import BsaI, BsmBI
 from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
+from Bio.SeqUtils import MeltingTemp as mt
 from primers import primers
 #import primer3 as pr
 
@@ -132,8 +133,10 @@ def get_annealed_part(a, b):
 
 def calculate_tm(seq):
 
-    return pr.calcTm(seq, dna_conc=250, dntp_conc=10,
-                      tm_method='santalucia', salt_corrections_method='santalucia')
+	return np.median([mt.Tm_Wallace(seq), mt.Tm_GC(seq), mt.Tm_NN(seq)])
+
+    #return pr.calcTm(seq, dna_conc=250, dntp_conc=10,
+    #                  tm_method='santalucia', salt_corrections_method='santalucia')
 
 def generate_pcr(fragments, raw_primers, primer_seq):
 
