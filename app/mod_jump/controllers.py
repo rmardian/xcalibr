@@ -10,7 +10,7 @@ from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from primers import primers
-import primer3 as pr
+#import primer3 as pr
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 RESOURCES = os.path.join(APP_ROOT, '../resources/')
@@ -359,7 +359,7 @@ def simulate_assembly(assembly_plan_file, maps, raw_fastas, enzyme):
 		print(new_promoters)
 
 	else:
-		
+
 		#assembly_plan = pd.read_csv(RESOURCES + '{}'.format(assembly_plan_file[0]))
 		assembly = assembly_plan.iloc[:, 2:].melt()
 		assembly['name'] = assembly['value'].apply(lambda x: mapping[x] if x in mapping else '')
