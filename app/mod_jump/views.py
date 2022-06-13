@@ -49,7 +49,7 @@ def run_part_domestication():
 
         #if everything checks out
         parts = pd.read_csv(INPUT + '{}'.format(parts_file[0])) #always at index 0
-        parts['sequence'] = parts['sequence'].str.upper()
+        parts['sequence'] = parts['sequence'].str.rstrip().str.upper()
 
         mapping = pd.read_csv(INPUT + '{}'.format(map_file[0])) if map_file else None
 
@@ -57,7 +57,7 @@ def run_part_domestication():
         plasmids = pd.DataFrame([(p.id, str(p.seq)) for fasta in fastas \
                                 for p in list(SeqIO.parse(INPUT + '{}'.format(fasta), 'fasta'))], \
                                 columns=['name', 'sequence'])
-        plasmids['sequence'] = plasmids['sequence'].str.upper()
+        plasmids['sequence'] = plasmids['sequence'].str.rstrip().str.upper()
 
         message = domesticate_parts(parts, mapping, plasmids)
         return render_template('jump-report.html', title=title, header="Task successfully executed.", message=Markup(message), status='OK')
@@ -97,7 +97,7 @@ def run_assembly_simulation():
                             for p in list(SeqIO.parse(INPUT + '{}'.format(fasta), 'fasta'))], \
                             columns=['name', 'sequence', 'level'])
         plasmids['level'] = plasmids['level'].str.split('.', expand=True)[0]
-        plasmids['sequence'] = plasmids['sequence'].str.upper()
+        plasmids['sequence'] = plasmids['sequence'].str.rstrip().str.upper()
 
         message = simulate_assembly(plan, mapping, plasmids, enzyme)
         

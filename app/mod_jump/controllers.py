@@ -29,7 +29,7 @@ OUTPUT = os.path.join(RESOURCES, './output/')
 def handle_file(input_file, format='tabular'):
 
 	valid_tab = ['csv']
-	valid_seq = ['fasta', 'zip']
+	valid_seq = ['fa', 'fasta', 'zip']
 	filename = input_file.filename
 	ext = filename.rsplit('.', 1)[1].lower()
 
@@ -103,6 +103,8 @@ def design_fragments(parts, prefix, suffix):
 	return fragments
 
 def design_primers(parts, prefix, suffix):
+
+    print(parts)
     
     failed_parts = []
     primers_list = []
@@ -182,46 +184,53 @@ def generate_lvl_0_map(fragments, mapping):
 
 def domesticate_parts(parts, mapping, plasmids):
 
-	mapping_full = dict(zip(mapping['full_name'], mapping['short_name'])) if mapping is not None else None
-	mapping_short = dict(zip(mapping['short_name'], mapping['full_name'])) if mapping is not None else None
+    mapping_full = dict(zip(mapping['full_name'], mapping['short_name'])) if mapping is not None else None
+    mapping_short = dict(zip(mapping['short_name'], mapping['full_name'])) if mapping is not None else None
 
-	recognition_sites = np.array([(enz, str(Seq(enz).reverse_complement())) for enz in [BsaI.site, BsmBI.site]]).ravel().tolist()
-	prefix, suffix = recognition_sites[2] + recognition_sites[0] + 'A', 'T' + recognition_sites[1] + 'T' + recognition_sites[3]
+    recognition_sites = np.array([(enz, str(Seq(enz).reverse_complement())) for enz in [BsaI.site, BsmBI.site]]).ravel().tolist()
+    prefix, suffix = recognition_sites[2] + recognition_sites[0] + 'A', 'T' + recognition_sites[1] + 'T' + recognition_sites[3]
 
-	#generate templates and fragments, might need to print at some point?
-	templates, missing_parts = find_templates(parts, plasmids, mapping_full)
-	valid_parts, invalid_parts = check_internal_sites(parts[~parts['name'].isin(missing_parts)], recognition_sites)
-	fragments = design_fragments(valid_parts, prefix, suffix)
+    #generate templates and fragments, might need to print at some point?
+    templates, missing_parts = find_templates(parts, plasmids, mapping_full)
+    valid_parts, invalid_parts = check_internal_sites(parts[~parts['name'].isin(missing_parts)], recognition_sites)
 
-	#generate primers
-	final_primers, parts_x_primers, failed_parts = design_primers(fragments, prefix, suffix)
-	final_primers.to_csv(OUTPUT + 'primers.csv', index=False)
-	
-	#generate pcr rxn
-	pcr_rxn = generate_pcr(fragments, parts_x_primers, templates)
-	pcr_rxn.to_csv(OUTPUT + 'pcr_rxn.csv', index=False)
+    fragments = pd.DataFrame()
+    failed_parts = pd.DataFrame()
+    final_primers = pd.DataFrame()
 
-	#generate plasmid maps
-	level_0 = generate_lvl_0_map(fragments[['name', 'ext_sequence']], mapping_short)
-	level_0.to_csv(OUTPUT + 'level-0-parts.csv', index=False)
-	write_fasta(level_0)
+    if len(valid_parts)>0:
 
-	#generate visual SBOL
-	# shutil.rmtree(RESOURCES + 'visualization')
-	# os.mkdir(RESOURCES + 'visualization')
-	# for _, sample in valid_parts[['name', 'overhang', 'color']].iterrows():
-	#	generate_part_figure(sample, RESOURCES + 'visualization/{}.png'.format(sample[0]))
+        fragments = design_fragments(valid_parts, prefix, suffix)
 
-	#zip output
-	zip_output(['primers.csv', 'pcr_rxn.csv', 'level-0-parts.csv'], sequence=True)
+        #generate primers
+        final_primers, parts_x_primers, failed_parts = design_primers(fragments, prefix, suffix)
+        final_primers.to_csv(OUTPUT + 'primers.csv', index=False)
+        
+        #generate pcr rxn
+        pcr_rxn = generate_pcr(fragments, parts_x_primers, templates)
+        pcr_rxn.to_csv(OUTPUT + 'pcr_rxn.csv', index=False)
 
-	#final output
-	missing_msg = 'The following part(s) cannot be created due to missing template(s): <b>{}</b><br/><br/>'.format(missing_parts) if len(missing_parts)>0 else ''
-	forbidden_msg = 'The following part(s) cannot be created due to internal restriction sites: <b>{}</b>. Future update will support further domestication to remove these sites.<br/><br/>'.format(invalid_parts['name'].tolist()) if invalid_parts.shape[0]>0 else ''
-	failed_msg = 'The following part(s) cannot be created due to difficulty in finding the most optimum primers: <b>{}</b>.<br/><br/>'.format(failed_parts) if len(failed_parts) > 0 else ''
-	success_msg = 'Generated <b>{}</b> primers for domesticating <b>{}</b> level-0 parts.<br/><br/>'.format(final_primers.shape[0], valid_parts.shape[0])
+        #generate plasmid maps
+        level_0 = generate_lvl_0_map(fragments[['name', 'ext_sequence']], mapping_short)
+        level_0.to_csv(OUTPUT + 'level-0-parts.csv', index=False)
+        write_fasta(level_0)
 
-	return missing_msg + forbidden_msg + failed_msg + success_msg
+        #generate visual SBOL
+        # shutil.rmtree(RESOURCES + 'visualization')
+        # os.mkdir(RESOURCES + 'visualization')
+        # for _, sample in valid_parts[['name', 'overhang', 'color']].iterrows():
+        #	generate_part_figure(sample, RESOURCES + 'visualization/{}.png'.format(sample[0]))
+
+        #zip output
+        zip_output(['primers.csv', 'pcr_rxn.csv', 'level-0-parts.csv'], sequence=True)
+
+    #final output
+    missing_msg = 'The following part(s) cannot be created due to missing template(s): <b>{}</b><br/><br/>'.format(missing_parts) if len(missing_parts)>0 else ''
+    forbidden_msg = 'The following part(s) cannot be created due to internal restriction sites: <b>{}</b>. Future update will support further domestication to remove these sites.<br/><br/>'.format(invalid_parts['name'].tolist()) if invalid_parts.shape[0]>0 else ''
+    failed_msg = 'The following part(s) cannot be created due to difficulty in finding the most optimum primers: <b>{}</b>.<br/><br/>'.format(failed_parts) if len(failed_parts) > 0 else ''
+    success_msg = 'Generated <b>{}</b> primers for domesticating <b>{}</b> level-0 parts.<br/><br/>'.format(final_primers.shape[0], valid_parts.shape[0])
+
+    return missing_msg + forbidden_msg + failed_msg + success_msg
 
 ### SIMULATE ASSEMBLY ###
 
