@@ -224,6 +224,9 @@ def domesticate_parts(parts, mapping, plasmids):
         #zip output
         zip_output(['primers.csv', 'pcr_rxn.csv', 'level-0-parts.csv'], sequence=True)
 
+    else:
+        zip_output([])
+
     #final output
     missing_msg = 'The following part(s) cannot be created due to missing template(s): <b>{}</b><br/><br/>'.format(missing_parts) if len(missing_parts)>0 else ''
     forbidden_msg = 'The following part(s) cannot be created due to internal restriction sites: <b>{}</b>. Future update will support further domestication to remove these sites.<br/><br/>'.format(invalid_parts['name'].tolist()) if invalid_parts.shape[0]>0 else ''
