@@ -35,23 +35,26 @@
                 </nav>
                 <!-- Page content-->
                 <div class="container-fluid">
-                    <form method="POST" action="{{ url_for('jump.download_output') }}" enctype="multipart/form-data">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h4 class="mt-4">{{title}}</h4>
-                                <br/>
-                                <p><code>{{header}}</code></p>
-                                <p>{{message}}</p>
-                            </div>
-                        </div>
-                        {% if status=="OK" %}
-                        <div class="row">
-                            <div class="col-md-6">
-                                <input type="submit" class="btn btn-info btn-fill" id="submit_id" name="submit" value="Download Result"/>
-                            </div>
-                        </div>
-                        {% endif %}
-                    </form>
+                    <h4 class="mt-4">General guidelines</h4>
+                    <br/>
+                    <p>This software is currently under-development and is in beta-release. Please excuse the ugly user-interface and relatively-fragile functionalities (i.e. it might easily break for no obvious reasons). To make the most of use of this tool, please follow the guidelines below:</p>
+
+                    <ol>
+                        <li>For tabular files (e.g. parts, assembly plan), please save your files in .csv instead of in .xlsx (or any other format).</li>
+                        <li>For sequence files, please use FASTA format (Genbank is not currently supported, and will be supported in future releases). A single fasta file can contain a single sequence, or multiple sequences. If you have multiple fasta files, compress all the files in .zip format without adding them into another folder.</li>
+                        <li>For <code>parts</code> file, these columns are mandatory: ['name', 'overhang', 'sequence'], and column ['color'] is optional if you want to generate visualization/diagram. Please avoid using different column names.</li>
+                        <li>The <code>mapping</code> file is optional but it can be useful to shorten the name of the parts in your assembly plan. When using this, these columns are mandatory: ['id', 'short_name', 'full_name']. All the values should be unique. Please avoid using different column names.</li>
+                        <li>For any <code>assembly-plan</code> file, these columns are mandatory: ['id', 'name', 'part_1', ..., 'part_n', 'vector']. The number of parts is not fixed as long as consistent. Please avoid using different column names for ['id', 'name', 'vector'], while ['part_1', ..., 'part_n'] can be replaced with other names, but it is recommended to only use alphanumeric characters and replace whitespace with either '_' or '-'.</li>
+                        <li>If you still encounter any error, please refresh the page and try again. If it still did not work, feel free to ask me :) (Rizki.Mardian@ed.ac.uk).</li>
+                    </ol>
+                    <br/>
+                    <p class="copyright">
+                        ©
+                        <script>
+                            document.write(new Date().getFullYear())
+                        </script>
+                        R. Mardian (<a href="https://frenchlab.bio.ed.ac.uk/">French Lab - The University of Edinburgh</a>)
+                    </p>
                 </div>
             </div>
         </div>

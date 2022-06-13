@@ -1,0 +1,7 @@
+id,name,promoter,rbs,cds,terminator,vector
+1,PBAD-34-sGFP_A,PBAD_P,B0034_RN,sfGFP_O,B0015_CT,1A
+2,PCin-34-sGFP_A,PCin_P,B0034_RN,sfGFP_O,B0015_CT,1A
+3,PSalTTC-34-sGFP_A,PSalTTC_P,B0034_RN,sfGFP_O,B0015_CT,1A
+4,PBAD-34-mCherry_A,PBAD_P,B0034_RN,mCherry_O,B0015_CT,1A
+5,PCin-34-mCherry_A,PCin_P,B0034_RN,mCherry_O,B0015_CT,1A
+6,PSalTTC-34-mCherry_A,PSalTTC_P,B0034_RN,mCherry_O,PSalTTC_P,1A

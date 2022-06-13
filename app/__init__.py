@@ -117,4 +117,16 @@ def jump_automate():
 	
 	return render_template('jump-automate.html')
 
+@app.route("/jump-visualize.html")
+@app.route("/jump-visualize")
+def jump_visualize():
+	
+	return render_template('jump-visualize.html')
+
+@app.route("/jump-guideline.html")
+@app.route("/jump-guideline")
+def jump_guideline():
+	
+	return render_template('jump-guideline.html')
+
 
