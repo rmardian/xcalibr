@@ -1,0 +1,208 @@
+{% extends "layout.html" %}
+
+{% block menu %}
+<li class="nav-item active">
+    <a class="nav-link" href="{{ url_for('automate_design') }}">
+        <i class="nc-icon nc-settings-90"></i>
+        <p>Automate Design</p>
+    </a>
+</li>
+<li>
+    <a class="nav-link" href="{{ url_for('generate_model') }}">
+        <i class="nc-icon nc-preferences-circle-rotate"></i>
+        <p>Generate Model</p>
+    </a>
+</li>
+<!--<li>
+    <a class="nav-link" href="{{ url_for('simulate_design') }}">
+        <i class="nc-icon nc-button-play"></i>
+        <p>Simulate Design</p>
+    </a>
+</li>-->
+<li>
+  <a class="nav-link" href="{{ url_for('compose_primer') }}">
+      <i class="nc-icon nc-palette"></i>
+      <p>Plan Assembly</p>
+  </a>
+</li>
+{% endblock %}
+
+{%  block content %}
+                
+<div class="main-panel">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg " color-on-scroll="500">
+        <div class="container-fluid">
+            <a class="navbar-brand" href=""> Generate Model </a>
+            <button href="" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-bar burger-lines"></span>
+                <span class="navbar-toggler-bar burger-lines"></span>
+                <span class="navbar-toggler-bar burger-lines"></span>
+            </button>
+        </div>
+    </nav>
+    
+    <!-- End Navbar -->
+    <div class="content">
+        <div class="container-fluid">
+            <form method="POST" action="{{ url_for('model.run_model') }}" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card ">
+                            <div class="card-header ">
+                                <h4 class="card-title">Model Definition</h4>
+                                <p class="card-category">Metadata</p>
+                                <!--<p text="" style="color:orange">{{ message }}</p>-->
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p>Select a model</p>
+                                        <select class="btn dropdown-toggle form-control" id="model_class_id" name="model_class" onChange="populateParts()">
+                                            <option disabled selected>-- Select a model --</option>
+                                            <option>Intein-based logic gate model</option>
+                                            <option>ECF/AS-based logic gate model</option>
+                                            {% for row in data %}
+                                                <option>{{row}}</option>
+                                            {% endfor %}
+                                            <option>Create custom model</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p>White-box vs Black-box?</p>
+                                        <select class="btn dropdown-toggle form-control" id="model_interpret_id" name="model_interpret">
+                                            <option selected>White-box (Deterministic/ODEs)</option>
+                                            <option disabled>Black-box (Machine Learning)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p>Static vs Dynamic?</p>
+                                        <select class="btn dropdown-toggle form-control" id="model_type_id" name="model_type">
+                                            <option selected>Dynamic model</option>
+                                            <option disabled>Static model</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card ">
+                            <div class="card-header ">
+                                <h4 class="card-title">Genetic Parts</h4>
+                                <p class="card-category">Choose a genetic part to model</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p>Choose a genetic part</p>
+                                        <select class="btn dropdown-toggle form-control" id="part_type_id" name="part_type">
+                                            <option disabled selected>-- Select a model --</option>
+                                            <option disabled>1-input NOT gate</option>
+                                            <option disabled>2-inputs AND gate</option>
+                                            <option disabled>2-inputs OR gate</option>
+                                            <option disabled>2-inputs XOR gate</option>
+                                            <option disabled>2-inputs NAND gate</option>
+                                            <option disabled>2-inputs NOR gate</option>
+                                            <option disabled>2-inputs XNOR gate</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p>Fluorescence data</p>
+                                        <input type="file" class=" form-control" id="fluorescence_data_id" name="fluorescence_data"/>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p>OD data</p>
+                                        <input type="file" class=" form-control" id="od_data_id" name="od_data"/>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h6 class="text-muted">Download <a href="{{ url_for('model.dataset') }}">a sample data</a>, or check <a href="javascript:void(0)" onclick="showGuide()">guidelines</a> for formatting input files.</h6>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="checkbox">
+                                            <input type="checkbox" id="save_result_id" name="save_result" checked>
+                                            <label>Save result into database</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card ">
+                            <div class="card-header ">
+                                <h4 class="card-title">Model Name</h4>
+                                <p class="card-category">Identifier for the model</p>
+                                <!--<p text="" style="color:orange">{{ message }}</p>-->
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <input type="text" class=" form-control" id="model_name_id" name="model_name"/>
+                                    </div>
+                                </div>
+                                <br/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="reset" class="btn btn-warning btn-fill" id="reset_id" name="reset" value="Reset"/>
+                        <input type="submit" class="btn btn-info btn-fill" id="submit_id" name="submit" value="Submit" onclick="validateModelForm()"/>
+                    </div>
+                    <div class="col-md-6" style="text-align:right;">
+                        <button type="button" class="btn btn-info btn-fill">Add Section</button>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container-fluid">
+            <nav>
+                <p class="copyright text-center">
+                    ©
+                    <script>
+                        document.write(new Date().getFullYear())
+                    </script>
+                    R. Mardian (<a href="http://wang.bio.ed.ac.uk">Wang Lab</a>), bootstrap template by <a href="https://www.creative-tim.com/product/light-bootstrap-dashboard">Creative Tim</a>
+                </p>
+            </nav>
+        </div>
+    </footer>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Javascript method's body can be found in static/js/demos.js
+        demo.initDashboardPageCharts();
+        demo.showNotification();
+    });
+</script>
+{% endblock %}

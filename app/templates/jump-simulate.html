@@ -8,6 +8,10 @@
         <title>Simple design automation tool for JUMP assembly</title>
         <!-- Favicon
         <link rel="icon" type="image/x-icon" href="../static/img/favicon.ico" />-->
+        <!-- Fonts and icons -->
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,700,200" rel="stylesheet" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="../static/css/styles.css" rel="stylesheet" />
         <link href="../static/css/user.css" rel="stylesheet" />
@@ -18,26 +22,28 @@
         </div>
         <div class="d-flex" id="wrapper">
             <!-- Sidebar-->
-            <div class="border-end bg-white" id="sidebar-wrapper">
-                <div class="sidebar-heading border-bottom bg-light" onclick="location.href='jump.html';" style="cursor: pointer;"><h2 href="{{ url_for('jump_home') }}">JUMP Assembly Tool</h2></div>
+            <div class="border-end" id="sidebar-wrapper" style="font-family:Roboto">
+                <div style='height:70px;text-align:center; background-color: #80a1b8; cursor: pointer;' class="sidebar-heading border-bottom" onclick="location.href='jump.html';" >
+                    <img style='width:120px;' src="../static/img/jump-logo.png" href="{{ url_for('jump_home') }}"/>
+                </div>
                 <div class="list-group list-group-flush">
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('jump_domesticate') }}">Domesticate Part</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('jump_simulate') }}">Simulate Assembly</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('jump_visualize') }}">Visualize Construct</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('jump_automate') }}">Automate Design</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('jump_guideline') }}">Guidelines</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('jump_domesticate') }}"><span class="material-symbols-outlined">arrow_circle_right</span>&nbsp;&nbsp;&nbsp;Domesticate Part</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('jump_simulate') }}"><span class="material-symbols-outlined">arrow_circle_right</span>&nbsp;&nbsp;&nbsp;Simulate Assembly</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('jump_visualize') }}"><span class="material-symbols-outlined">arrow_circle_right</span>&nbsp;&nbsp;&nbsp;Visualize Construct</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('jump_automate') }}"><span class="material-symbols-outlined">arrow_circle_right</span>&nbsp;&nbsp;&nbsp;Automate Design</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3" href="{{ url_for('jump_guideline') }}"><span class="material-symbols-outlined">arrow_circle_right</span>&nbsp;&nbsp;&nbsp;Guidelines</a>
                 </div>
             </div>
             <!-- Page content wrapper-->
             <div id="page-content-wrapper">
-                <!-- Top navigation-->
-                <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-                    <div class="container-fluid">
-                        <button class="btn btn-primary" id="sidebarToggle">Toggle Menu</button>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <!-- Top navigation
+                <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">-->
+                    <div style='height:70px; background-color: #8fb3cd;' class="container-fluid border-bottom">
+                        <!--<button class="btn btn-primary" id="sidebarToggle">Toggle Menu</button>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>-->
                     </div>
-                </nav>
-                <!-- Page content-->
+                <!--</nav>
+                 Page content-->
                 <div class="container-fluid">
                     <form method="POST" action="{{ url_for('jump.run_assembly_simulation') }}" enctype="multipart/form-data">
                         <h4 class="mt-4">Simulate assembly and generate new plasmid maps</h4>

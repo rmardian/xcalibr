@@ -92,6 +92,11 @@ def not_found(e):
 
 ### Temporary pages for JUMP assembly ###
 
+@app.route("/jump-trial.html")
+def jump_trial():
+
+	return render_template('index.html')
+
 @app.route("/jump-home.html")
 @app.route("/jump-home")
 @app.route("/jump.html")

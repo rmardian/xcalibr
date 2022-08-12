@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>XCalibur |</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}"/>
+    <!-- Font Awesome
+    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">-->
+    <!-- NProgress -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/nprogress.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap-progressbar-3.3.4.min.css') }}"/>
+    <!-- Animate.css-->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/animate.min.css') }}"/>
+    <!-- Custom Theme Style -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom.min.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/user.css') }}"/>
+</head>
+<body class="login">
+    <div>
+        <a class="hiddenanchor" id="signup"></a>
+        <a class="hiddenanchor" id="signin"></a>
+
+        <div class="login_wrapper">
+            <div class="animate form login_form">
+
+                <section class="login_content">
+                    <form method="post" action="{{ url_for('auth.login') }}">
+                        <div class="logo" style="text-align:center;">
+                            <img src="../static/img/logo-login.png"/>
+                        </div>
+                        <p class="message">{{ message }}</p>
+                        <div>
+                            <input type="text" class="form-control" placeholder="Username" name="username"/>
+                        </div>
+                        <div>
+                            <input type="password" class="form-control" placeholder="Password" name="password"/>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-default submit">Login</button>
+                            <a class="reset_pass">Lost your password?</a>
+                        </div>
+                    </form>
+
+                    <div class="clearfix"></div>
+
+                    <div class="separator">
+                        <p class="change_link">New to site?
+                            <a href="#signup" class="to_register"> Create Account </a>
+                        </p>
+
+                        <div class="clearfix"></div>
+                        <br />
+
+                        <div>
+                            <p>© 2021 R. Mardian (Wang Lab, The University of Edinburgh)</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div id="register" class="animate form registration_form">
+                <section class="login_content">
+                    <form method="post" action="/register" onsubmit="return checkForm(this);">
+                        <div class ="form-group">
+                            <h1>Create Account</h1>
+                            <p class="message">{{ message }}</p>
+                            <div>
+                                <input type="text" class="form-control" placeholder="Name" name="name"/>
+                            </div>
+                            <div>
+                                <input type="text" class="form-control" placeholder="Username" name="username" required="required"/>
+                            </div>
+                            <div>
+                                <input type="email" class="form-control" placeholder="Email" name="email" required=""/>
+                            </div>
+                            <div>
+                                <input type="password" id="pwd-check" class="form-control" placeholder="Password" name="password" required="required"/>
+                            </div>
+                            <div>
+                                <input type="password" class="form-control" placeholder="Confirm Password" name="password_confirm"/>
+                            </div>
+                            <div>
+                                <p>Password must be minimum 8 characters, and contains 1 uppercase letter, 1 lowercase letter, and 1 number</p><br/>
+                            </div>
+                            <div>
+                                <button type="submit" class="btn btn-default submit">Register</button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="clearfix"></div>
+
+                    <div class="separator">
+                        <p class="change_link">Already a member ?
+                            <a href="#signin" class="to_register"> Log in </a>
+                        </p>
+
+                        <div class="clearfix"></div>
+                        <br />
+
+                        <div>
+                            <p>© 2021 R. Mardian (Wang Lab, The University of Edinburgh)</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <!-- Bootstrap -->
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <!-- NProgress -->
+    <script src="{{ url_for('static', filename='js/nprogress.js') }}"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="{{ url_for('static', filename='js/bootstrap-progressbar.min.js') }}"></script>
+    <!-- Angular -->
+    <script src="{{ url_for('static', filename='js/angular.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/apps.js') }}"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="{{ url_for('static', filename='js/custom.min.js') }}"></script>
+
+    <script type="text/javascript">
+    function checkForm(form)
+    {
+        re = /^\w+$/;
+        if(!re.test(form.username.value)) {
+            alert("Error: Username must contain only letters, numbers and underscores!");
+            form.username.focus();
+            return false;
+        }
+
+        if(form.password.value != "" && form.password.value == form.password_confirm.value) {
+
+            var error = 0;
+            var message = "Error:";
+            if(form.password.value.length < 8) {
+                message += "\n- Password must contain at least 8 characters!";
+                error++;
+                form.password.focus();
+            }
+            if(form.password.value == form.username.value) {
+                message += "\n- Password must be different from username!";
+                error++;
+                form.password.focus();
+            }
+            re = /[0-9]/;
+            if(!re.test(form.password.value)) {
+                message += "\n- Password must contain at least 1 number (0-9)!";
+                error++;
+                form.password.focus();
+            }
+            re = /[a-z]/;
+            if(!re.test(form.password.value)) {
+                message += "\n- Password must contain at least 1 lowercase letter (a-z)!";
+                error++;
+                form.password.focus();
+            }
+            re = /[A-Z]/;
+            if(!re.test(form.password.value)) {
+                message += "\n- Password must contain at least 1 uppercase letter (A-Z)!";
+                error++;
+                form.password.focus();
+            }
+            if(error > 0) {
+                alert(message);
+                return false;
+            }
+
+        } else {
+            alert("Error: Please check that you have entered and confirmed your password!");
+            form.password.focus();
+            return false;
+        }
+        return true;
+    }
+    </script>
+</body>
+</html>

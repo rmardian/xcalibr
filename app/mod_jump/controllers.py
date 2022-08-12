@@ -60,12 +60,12 @@ def zip_output(filenames, sequence=False, sbol=False):
 
 def write_fasta(assembly_result):
 
-	shutil.rmtree(OUTPUT + 'fasta')
-	os.mkdir(OUTPUT + 'fasta')
-	for i, row in assembly_result.iterrows():
-		record = SeqRecord(Seq(row['sequence']), id=row['name'], description='')
-		with open(OUTPUT + 'fasta/{}.fasta'.format(row['name']), 'w') as handle:
-			SeqIO.write(record, handle, 'fasta')
+    shutil.rmtree(OUTPUT + 'fasta')
+    os.mkdir(OUTPUT + 'fasta')
+    for i, row in assembly_result.iterrows():
+        record = SeqRecord(Seq(row['sequence']), id=row['name'], description='')
+        with open(OUTPUT + 'fasta/{}.fasta'.format(row['name']), 'w') as handle:
+            SeqIO.write(record, handle, 'fasta')
 
 ### DOMESTICATE PARTS ###
 
@@ -318,6 +318,7 @@ def assemble(assembly_plan, mapping, odd):
         sites = list(map(list, zip(*[fragment[:2] for fragment in fragments])))
         if len(sites) > 0:
             sites[0] = sites[0][1:] + [sites[0][0]]
+            print(sites)
             if (sites[0]==sites[1]):
                 assembly = reindex_ps1(''.join([fragment[2][:-4] for fragment in fragments]))
                 constructs.append((name, assembly))
