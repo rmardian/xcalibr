@@ -45,9 +45,11 @@ def handle_file(input_file, format='tabular'):
 			return [filename]
 	return None
 
-def zip_output(filenames, sequence=False, sbol=False):
+def zip_output(filenames, output_name, sequence=False, sbol=False):
 
-    path_to_file = os.path.join(OUTPUT, secure_filename('output.zip'))
+    print(filenames)
+
+    path_to_file = os.path.join(OUTPUT, secure_filename('{}.zip'.format(output_name)))
     with ZipFile(path_to_file, 'w') as zip_obj:
         for filename in filenames:
             zip_obj.write(OUTPUT + filename, filename)
@@ -69,7 +71,7 @@ def write_fasta(assembly_result):
 
 ### DOMESTICATE PARTS ###
 
-def find_templates(parts, plasmids, mapping):
+def find_templates(parts, plasmids, mapping=None):
 
 	templates = pd.DataFrame([(part['name'], plasmid['name']) for _, part in parts.iterrows() \
                       for _, plasmid in plasmids.iterrows() if plasmid['sequence'].find(part['sequence'])!=-1], \
@@ -182,7 +184,7 @@ def generate_lvl_0_map(fragments, mapping):
 	fragments_map = dict(zip(fragments['name'], fragments['ext_sequence']))
 	return assemble_lvl_0(fragments_map, uac)
 
-def domesticate_parts(parts, mapping, plasmids):
+def domesticate_parts(parts, mapping, plasmids, output_name):
 
     mapping_full = dict(zip(mapping['full_name'], mapping['short_name'])) if mapping is not None else None
     mapping_short = dict(zip(mapping['short_name'], mapping['full_name'])) if mapping is not None else None
@@ -222,10 +224,10 @@ def domesticate_parts(parts, mapping, plasmids):
         #	generate_part_figure(sample, RESOURCES + 'visualization/{}.png'.format(sample[0]))
 
         #zip output
-        zip_output(['primers.csv', 'pcr_rxn.csv', 'level-0-parts.csv'], sequence=True)
+        zip_output(['primers.csv', 'pcr_rxn.csv', 'level-0-parts.csv'], output_name, sequence=True)
 
     else:
-        zip_output([])
+        zip_output([], output_name)
 
     #final output
     missing_msg = 'The following part(s) cannot be created due to missing template(s): <b>{}</b><br/><br/>'.format(missing_parts) if len(missing_parts)>0 else ''
@@ -331,18 +333,21 @@ def assemble(assembly_plan, mapping, odd):
 
     return df_constructs, incorrect_assembly
 
-def simulate_assembly(plan, mapping, plasmids, enzyme):
+def simulate_assembly(plan, mapping, plasmids, enzyme, output_name):
 
-	mapping_full = dict(zip(mapping['full_name'], mapping['short_name'])) if mapping is not None else None
-	mapping_short = dict(zip(mapping['short_name'], mapping['full_name'])) if mapping is not None else None
+	mapping_full = dict(zip(mapping['full_name'], mapping['sample_id'])) if mapping is not None else None
+	mapping_short = dict(zip(mapping['sample_id'], mapping['full_name'])) if mapping is not None else None
 
 	#reindex plasmid to start from annealing region of PS1 primer
 	plasmids['sequence'] = plasmids['sequence'].apply(reindex_ps1)
 
 	assembly = plan.iloc[:, 2:].melt().rename(columns={'value': 'name'}).drop_duplicates().reset_index(drop=True)
 	if mapping_full is not None:
-		plasmids['name'] = plasmids['name'].map(mapping_full)
+		plasmids['name'] = plasmids['name'].apply(lambda x: mapping_full[x] if x in mapping_full else x)
 	assembly = pd.merge(assembly, plasmids, on='name', how='left')
+
+	print(plasmids, mapping_full, assembly)
+
 	missing_plasmids = assembly[assembly['sequence'].isnull()]['name'].tolist()
 	assembly = assembly.dropna().reset_index(drop=True)
 	plan_mapping = dict(zip(assembly['name'], assembly['sequence']))
@@ -352,13 +357,13 @@ def simulate_assembly(plan, mapping, plasmids, enzyme):
 	assembly_result = assembly_result[~assembly_result['name'].isin(plasmids['name'].tolist())]
 	
 	if mapping_short:
-		assembly_result['name'] = assembly_result['name'].map(mapping_short)
+		assembly_result['name'] = assembly_result['name'].apply(lambda x: mapping_short[x] if x in mapping_short else x)
 	assembly_result.to_csv(OUTPUT + 'assembled-constructs.csv', index=False)
 
 	write_fasta(assembly_result)
 
 	#zip output
-	zip_output(['assembled-constructs.csv'], sequence=True)
+	zip_output(['assembled-constructs.csv'], output_name, sequence=True)
 
 	#final output
 	success_msg = 'Assembled <b>{}</b> constructs out of <b>{}</b> assembly plans.<br/><br/>'.format(assembly_result.shape[0], plan.shape[0])
@@ -542,7 +547,7 @@ def generate_tu_figure(sample, filename, show_plasmid=True, margin=0.18, plasmid
     plt.title(sample[0])
     plt.savefig(filename, dpi=300)
 
-def visualize_construct(plan_file, parts_file):
+def visualize_construct(plan_file, parts_file, output_name):
 
 	shutil.rmtree(OUTPUT + 'visualization')
 	os.mkdir(OUTPUT + 'visualization')
@@ -557,4 +562,4 @@ def visualize_construct(plan_file, parts_file):
 		generate_tu_figure(sample, OUTPUT + 'visualization/{}.png'.format(sample[0]))
 
 	#zip output
-	zip_output([], sbol=True)
+	zip_output([], output_name, sbol=True)

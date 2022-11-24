@@ -48,8 +48,9 @@ def run_part_domestication():
             return render_template('jump-report.html', title=title, header="Upload error, task not executed.", status='Failed')
 
         #if everything checks out
-        parts = pd.read_csv(INPUT + '{}'.format(parts_file[0])) #always at index 0
-        parts['sequence'] = parts['sequence'].str.rstrip().str.upper()
+        parts = pd.read_csv(INPUT + '{}'.format(parts_file[0])).fillna('') #always at index 0 and fill null with empty string
+        parts['sequence'] = (parts['prefix'] + parts['sequence'] + parts['suffix']).str.rstrip().str.upper()
+        parts = parts[['name', 'overhang', 'sequence']] #only take relevant columns
 
         mapping = pd.read_csv(INPUT + '{}'.format(map_file[0])) if map_file else None
 
@@ -59,8 +60,9 @@ def run_part_domestication():
                                 columns=['name', 'sequence'])
         plasmids['sequence'] = plasmids['sequence'].str.rstrip().str.upper()
 
-        message = domesticate_parts(parts, mapping, plasmids)
-        return render_template('jump-report.html', title=title, header="Task successfully executed.", message=Markup(message), status='OK')
+        output_name = '{}_domestication'.format(parts_file[0].split('.')[0])
+        message = domesticate_parts(parts, mapping, plasmids, output_name)
+        return render_template('jump-report.html', title=title, header="Task successfully executed.", message=Markup(message), filename=output_name, status='OK')
 
     return redirect(url_for('jump_home'))
 
@@ -99,10 +101,11 @@ def run_assembly_simulation():
         plasmids['level'] = plasmids['level'].str.split('.', expand=True)[0]
         plasmids['sequence'] = plasmids['sequence'].str.rstrip().str.upper()
 
-        message = simulate_assembly(plan, mapping, plasmids, enzyme)
+        output_name = '{}_simulation'.format(plan_file[0].split('.')[0])
+        message = simulate_assembly(plan, mapping, plasmids, enzyme, output_name)
         
         #details = "Part {} cannot be amplified, please find correct templates to amplify them from.".format(missing)
-        return render_template('jump-report.html', title=title, header="Task successfully executed.", message=Markup(message), status='OK')
+        return render_template('jump-report.html', title=title, header="Task successfully executed.", message=Markup(message), filename=output_name, status='OK')
 
     return redirect(url_for('jump_home'))
 
@@ -125,9 +128,9 @@ def run_construct_visualization():
         if not plan_file or not parts_file:
             return render_template('jump-report.html', title='Construct visualization', header="Upload error, task not executed.", status='Failed')
 
-        message = visualize_construct(plan_file, parts_file)
-        
-        return render_template('jump-report.html', title='Construct visualization', header="Task successfully executed.", status='OK')
+        output_name = '{}_visualization'.format(plan_file[0].split('.')[0])
+        message = visualize_construct(plan_file, parts_file, output_name)
+        return render_template('jump-report.html', title='Construct visualization', header="Task successfully executed.", filename=output_name, status='OK')
 
     return redirect(url_for('jump_home'))
 
@@ -136,6 +139,7 @@ def download_output():
 
     if request.method=='POST':
 
-        return send_from_directory(directory=OUTPUT, path='output.zip', as_attachment=True)
+        filename = request.form.get('filename')
+        return send_from_directory(directory=OUTPUT, path='{}.zip'.format(filename), as_attachment=True)
 
     return redirect(url_for('jump_home'))
